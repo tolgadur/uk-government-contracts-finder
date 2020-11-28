@@ -4,6 +4,8 @@ This is a website/api that lets search for contracts published by the UK governm
 ## Website Wrapper
 The website is a very simple wrapper for the api. You can type in the keywords that you want to search for and a list of all contracts that match are displayed. Unfortunately, I did not have time for pagination so the website will be quite slow.
 
+![Screenshot](Screenshot.PNG?raw=true)
+
 ## API User Guide
 The gateway works has two simple endpoints. The first fetches all contracts published by the UK government and saves them in a simple SQLite database:
 ```
