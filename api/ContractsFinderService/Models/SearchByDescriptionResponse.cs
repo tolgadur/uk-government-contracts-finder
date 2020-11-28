@@ -30,7 +30,7 @@ namespace api.ContractsFinderService.Models.ApiModels
         /// </returns>
         public SearchByDescriptionResponse Map(List<Contract> contracts)
         {
-            this.MatchingContracts.AddRange(contracts);
+            this.MatchingContracts = contracts;
             return this;
         }
 

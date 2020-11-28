@@ -56,8 +56,7 @@ namespace app.PaymentGatewayService
         {
             using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
             {
-                var res = cnn.Query<Contract>(String.Format("SELECT * FROM Contracts WHERE '{0}' IN (Description)", keyword), new DynamicParameters()).ToList();
-                return res;
+                return cnn.Query<Contract>(String.Format("SELECT * FROM Contracts WHERE Description LIKE '%{0}%'", keyword), new DynamicParameters()).ToList();
             }
         }
 

@@ -46,14 +46,8 @@ namespace api.ContractsFinderService
                 // fetch yesterdays contracts and then search
                 FetchNewContractsDaily();
                 var contracts = ConnectionHelper.SearchByDescription(payload.Description);
-                var searchResponse = new SearchByDescriptionResponse();
-                if (contracts.Count > 0)
-                {
-                    searchResponse.Map(contracts);
-                }
 
-                // return result
-                return new OkObjectResult(searchResponse);
+                return new OkObjectResult(new SearchByDescriptionResponse().Map(contracts));
             }
             catch (Exception ex)
             {
