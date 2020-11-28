@@ -42,8 +42,8 @@ namespace app.PaymentGatewayService
         {
             using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
             {
-                cnn.Execute("INSERT OR REPLACE INTO Contracts (Id, Title, PublishedDate, OrganisationName, NoticeType, DeadlineDate, AwardedDate, Description) VALUES " +
-                    "(@Id, @Title, @PublishedDate, @OrganisationName, @NoticeType, @DeadlineDate, @AwardedDate, @Description)", contract);
+                cnn.Execute("INSERT OR REPLACE INTO Contracts (Id, Title, PublishedDate, OrganisationName, DeadlineDate, AwardedDate, Description) VALUES " +
+                    "(@Id, @Title, @PublishedDate, @OrganisationName, @DeadlineDate, @AwardedDate, @Description)", contract);
             }
         }
 
@@ -56,7 +56,8 @@ namespace app.PaymentGatewayService
         {
             using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
             {
-                return cnn.Query<Contract>(String.Format("SELECT * FROM Payments WHERE {0} IN Description", keyword), new DynamicParameters()).ToList();
+                var res = cnn.Query<Contract>(String.Format("SELECT * FROM Contracts WHERE '{0}' IN (Description)", keyword), new DynamicParameters()).ToList();
+                return res;
             }
         }
 

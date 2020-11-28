@@ -38,3 +38,5 @@ C:\Users\mrhap\side_projects\uk-government-contracts-finder\api\bin\Debug\netcor
 C:\Users\mrhap\side_projects\uk-government-contracts-finder\api\bin\Debug\netcoreapp3.1\runtimes\win\lib\netcoreapp2.1\System.Data.SqlClient.dll
 C:\Users\mrhap\side_projects\uk-government-contracts-finder\api\bin\Debug\netcoreapp3.1\runtimes\win\lib\netstandard2.0\System.Security.Cryptography.ProtectedData.dll
 C:\Users\mrhap\side_projects\uk-government-contracts-finder\api\obj\Debug\netcoreapp3.1\api.csproj.CopyComplete
+C:\Users\mrhap\side_projects\uk-government-contracts-finder\api\bin\Debug\netcoreapp3.1\database.db
+C:\Users\mrhap\side_projects\uk-government-contracts-finder\api\bin\Debug\netcoreapp3.1\Newtonsoft.Json.dll

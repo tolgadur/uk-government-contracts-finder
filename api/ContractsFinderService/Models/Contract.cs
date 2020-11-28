@@ -10,6 +10,7 @@ namespace api.ContractsFinderService.Models.ApiModels
     using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
     using System;
+    using System.Collections.Generic;
 
     /// <summary>
     /// Defines the <see cref="Contract" />.
@@ -58,21 +59,28 @@ namespace api.ContractsFinderService.Models.ApiModels
         public string Description { get; set; }
 
         /// <summary>
-        /// Maps the jobject result.
+        /// Maps the contracts.
         /// </summary>
         /// <param name="contract">The contract.</param>
         /// <returns>
         /// The <see cref="Contract" />.
         /// </returns>
-        public Contract Map(JToken contract)
+        public static List<Contract> Map(Result contract)
         {
-            this.Title = contract["releases"]["tender"]["title"].ToString();
-            this.PublishedDate = DateTime.Parse(contract["publishedDate"].ToString());
-            this.OrganisationName = contract["publisher"]["name"].ToString();
-            this.DeadlineDate = DateTime.Parse(contract["releases"]["tender"]["tenderPeriod"]["endDate"].ToString());
-            this.AwardedDate = DateTime.Parse(contract["releases"]["awards"]["date"].ToString());
-            this.Description = contract["releases"]["tender"]["description"].ToString();
-            return this;
+            List<Contract> contracts = new List<Contract>();
+            foreach(var release in contract.Releases)
+            {
+                var newContract = new Contract();
+                newContract.OrganisationName = contract.Publisher.Name;
+                newContract.PublishedDate = contract.publishedDate;
+                newContract.Title = release.Tender.Title;
+                newContract.Description = release.Tender.Description;
+                newContract.AwardedDate = release.awards[0].Date;
+                newContract.DeadlineDate = release.Tender.TenderPeriod.EndDate;
+                contracts.Add(newContract);
+            }
+
+            return contracts;
         }
     }
 }

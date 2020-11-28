@@ -8,6 +8,7 @@
 
 namespace api.ContractsFinderService
 {
+    using api.ContractsFinderService.Models;
     using api.ContractsFinderService.Models.ApiModels;
     using app.PaymentGatewayService;
     using Microsoft.AspNetCore.Mvc;
@@ -29,7 +30,7 @@ namespace api.ContractsFinderService
         /// <summary>
         /// Contract Finder api endpoint
         /// </summary>
-        private static string ApiEndpoint = "https://www.contractsfinder.service.gov.uk/Published/Notices/OCDS/";
+        private static string ApiEndpoint = "https://www.contractsfinder.service.gov.uk/Published/Notices/OCDS/Search";
 
         /// <summary>
         /// This endpoint will search for a contract with matching description.
@@ -45,8 +46,14 @@ namespace api.ContractsFinderService
                 // fetch yesterdays contracts and then search
                 FetchNewContractsDaily();
                 var contracts = ConnectionHelper.SearchByDescription(payload.Description);
+                var searchResponse = new SearchByDescriptionResponse();
+                if (contracts.Count > 0)
+                {
+                    searchResponse.Map(contracts);
+                }
 
-                return new OkObjectResult(new SearchByDescriptionResponse().Map(contracts));
+                // return result
+                return new OkObjectResult(searchResponse);
             }
             catch (Exception ex)
             {
@@ -95,27 +102,31 @@ namespace api.ContractsFinderService
         private static List<Contract> GetContractsFromGovApi(DateTime publishedFrom, DateTime publishedTo, int page)
         {
             // construct request uri
-            var uriBuilder = new UriBuilder(ApiEndpoint);
+            var uriBuilder = new UriBuilder();
             var paramValues = HttpUtility.ParseQueryString(uriBuilder.Query);
-            paramValues.Add("publishedFrom", publishedFrom.ToString());
-            paramValues.Add("publishedTo", publishedTo.ToString());
+            paramValues.Add("publishedFrom", publishedFrom.ToString("yyyy-MM-dd"));
+            paramValues.Add("publishedTo", publishedTo.ToString("yyyy-MM-dd"));
             paramValues.Add("page", page.ToString());
             paramValues.Add("size", "100");
             paramValues.Add("orderBy", "publishedDate");
             paramValues.Add("order", "DESC");
             paramValues.Add("stages", "award");
-            uriBuilder.Query = paramValues.ToString();
+            uriBuilder.Query = Uri.EscapeUriString(HttpUtility.UrlDecode(paramValues.ToString()));
 
             // make http request
             List<Contract> contractsResponses = new List<Contract>();
-            HttpWebRequest request = (HttpWebRequest) WebRequest.Create(uriBuilder.Query);
+            HttpWebRequest request = (HttpWebRequest) WebRequest.Create(ApiEndpoint + uriBuilder.Query);
             HttpWebResponse response = (HttpWebResponse) request.GetResponse();
-            var reader = new StreamReader(response.GetResponseStream());
-            var responseBody = JObject.Parse(reader.ReadToEnd());
-            foreach (var res in responseBody["results"])
-            {
-                contractsResponses.Add(new Contract().Map(res));
+            StreamReader reader = new StreamReader(response.GetResponseStream());
 
+            // deserilize response
+            var jsonSerializerSettings = new JsonSerializerSettings();
+            jsonSerializerSettings.MissingMemberHandling = MissingMemberHandling.Ignore;
+            ContractFinderApiResponse responseBody = JsonConvert.DeserializeObject<ContractFinderApiResponse>(reader.ReadToEnd());
+
+            foreach (var res in responseBody.Results)
+            {
+                contractsResponses.AddRange(Contract.Map(res));
             }
 
             return contractsResponses;
