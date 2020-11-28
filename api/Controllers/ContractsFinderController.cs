@@ -46,7 +46,7 @@ namespace api.Controllers
         public IActionResult SaveLastYearsContracts()
         {
             ContractsFinder.FetchNewContractsYearly();
-            return Ok("Contracts saved.");
+            return Ok("curl --location --request GET 'https://localhost:44382/contracts/save/year'");
         }
 
         /// <summary>
