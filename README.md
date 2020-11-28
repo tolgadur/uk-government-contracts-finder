@@ -1,1 +1,1 @@
-# uk-government-contracts-finder
+# UK Government Contracts Finder
