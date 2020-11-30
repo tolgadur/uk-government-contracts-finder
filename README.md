@@ -7,7 +7,7 @@ The website is a very simple wrapper for the api. You can type in the keywords t
 ![Screenshot](Screenshot.PNG?raw=true)
 
 ## API User Guide
-The gateway works has two simple endpoints. The first fetches all contracts published by the UK government and saves them in a simple SQLite database:
+The gateway works has two simple endpoints. The first fetches all contracts published by the UK governmentin the previous year and saves them in a simple SQLite database:
 ```
 REQUEST:
 curl --location --request GET 'https://localhost:44382/contracts/save/year'
